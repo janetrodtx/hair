@@ -61,10 +61,10 @@ elif st.session_state.step == 2:
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡"):
             next_step()
 
 # --- Step 3: Journey Logic ---
@@ -78,10 +78,10 @@ elif st.session_state.step == 3:
             st.session_state.hair_issue = hair_issue
             col1, col2 = st.columns([1, 1])
             with col1:
-                if st.button("⬅️ Back"):
+                if st.button("⬅ Back"):
                     go_back()
             with col2:
-                if st.button("Next ➡️"):
+                if st.button("Next ➡"):
                     next_step()
         else:
             st.warning("⬆️ Please select your hair concern above to continue.")
@@ -131,10 +131,10 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("See Recommendations ➡️"):
+        if st.button("See Recommendations ➡"):
             next_step()
 
 # --- Step 6: Show Product Recommendations (TEXT ONLY) ---
@@ -162,10 +162,10 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡"):
             next_step()
 
 # --- Step 4 (Alt): Styling Product Budget ---
@@ -175,10 +175,10 @@ elif st.session_state.step == 4 and st.session_state.journey == "Styling Product
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("See Products ➡️"):
+        if st.button("See Products ➡"):
             next_step()
 
 # --- Step 5 (Alt): Show Styling Product Details ---
@@ -205,13 +205,14 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡"):
             st.session_state.step = 10  # Final Page
 
 # --- Step 10: Final Page ---
+    st.image("7.png", use_container_width=True)
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
