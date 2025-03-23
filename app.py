@@ -53,7 +53,10 @@ if st.session_state.step == 1:
 elif st.session_state.step == 2:
     st.image("2.png", use_container_width=True)
     st.markdown("<h3 style='text-align:center;'>What are you looking for?</h3>", unsafe_allow_html=True)
-    choice = st.radio("", ["Hair Concerns & Product Solutions", "Styling Product Recommendations"], horizontal=True)
+
+    journey_options = ["Hair Concerns & Product Solutions", "Styling Product Recommendations"]
+    default_index = journey_options.index(st.session_state.journey) if st.session_state.journey else 0
+    choice = st.radio("", journey_options, index=default_index, horizontal=True)
     st.session_state.journey = choice
 
     col1, col2 = st.columns([1, 1])
@@ -68,28 +71,37 @@ elif st.session_state.step == 2:
 elif st.session_state.step == 3:
     if st.session_state.journey == "Hair Concerns & Product Solutions":
         st.image("3.png", use_container_width=True)
-        hair_issue = st.selectbox("Select Your Hair Concern:", df["Issue"].dropna().unique())
-        st.session_state.hair_issue = hair_issue
+        hair_issues = df["Issue"].dropna().unique()
+        hair_issue = st.selectbox("Select Your Hair Concern:", ["Select an option"] + list(hair_issues))
 
-        col1, col2 = st.columns([1, 1])
-        with col1:
-            if st.button("⬅️ Back"):
-                go_back()
-        with col2:
-            if st.button("Next ➡️"):
-                next_step()
+        if hair_issue != "Select an option":
+            st.session_state.hair_issue = hair_issue
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button("⬅️ Back"):
+                    go_back()
+            with col2:
+                if st.button("Next ➡️"):
+                    next_step()
+        else:
+            st.warning("⬆️ Please select your hair concern above to continue.")
+
     else:
         st.image("4.png", use_container_width=True)
-        styling_goal = st.selectbox("Select Your Styling Goal:", df["Styling Goal"].dropna().unique())
-        st.session_state.styling_goal = styling_goal
+        styling_goals = df["Styling Goal"].dropna().unique()
+        styling_goal = st.selectbox("Select Your Styling Goal:", ["Select an option"] + list(styling_goals))
 
-        col1, col2 = st.columns([1, 1])
-        with col1:
-            if st.button("⬅️ Back"):
-                go_back()
-        with col2:
-            if st.button("Next ➡️"):
-                next_step()
+        if styling_goal != "Select an option":
+            st.session_state.styling_goal = styling_goal
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button("⬅️ Back"):
+                    go_back()
+            with col2:
+                if st.button("Next ➡️"):
+                    next_step()
+        else:
+            st.warning("⬆️ Please select your styling goal to continue.")
 
 # --- Step 4: Hair Concern Details ---
 elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns & Product Solutions":
@@ -125,7 +137,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡️"):
             next_step()
 
-# --- Step 6: Show Product Recommendations ---
+# --- Step 6: Show Product Recommendations (TEXT ONLY) ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
     if not df.empty:
         result = df[
@@ -205,20 +217,14 @@ elif st.session_state.step == 10:
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
-    <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care.  ✨</p>
+    <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <h2 style='text-align:center;'> What This App Does⚡ </h2>
-    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.
-
-    ✨Find what works for you.
-    💡Take control of your hair routine.
-     🛍Shop smarter, not harder.
-
-    Welcome to a better way to care for your hair!</p>
+    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</p>
     """, unsafe_allow_html=True)
-               
+
     st.markdown("""
     <p style='text-align:center;'>
     <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
