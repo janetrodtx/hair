@@ -200,8 +200,12 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
             st.session_state.step = 10  # Final Page
 
 # --- Step 10: Final Page ---
-elif st.session_state.step == 10:
-    st.image("7.png", use_container_width=True)
+st.markdown("""
+<div style='text-align: center;'>
+    <img src='7.png' style='width: 80%; max-width: 700px; border-radius: 10px;' />
+</div>
+""", unsafe_allow_html=True)
+
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
@@ -212,9 +216,9 @@ elif st.session_state.step == 10:
     <h2 style='text-align:center;'> What This App Does⚡ </h2>
     <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.
 
-    ✨ Find what works for you.
-    💡 Take control of your hair routine.
-     🛍 Shop smarter, not harder.
+    ✨Find what works for you.
+    💡Take control of your hair routine.
+     🛍Shop smarter, not harder.
 
     Welcome to a better way to care for your hair!</p>
     """, unsafe_allow_html=True)
