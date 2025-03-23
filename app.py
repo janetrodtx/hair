@@ -201,7 +201,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
 
 # --- Step 10: Final Page ---
 elif st.session_state.step == 10:
-    st.image("final.png", use_container_width=True)
+    st.image("6.png", use_container_width=True)
 
     st.markdown("""
     <h2 style='text-align:center;'>Thanks for Visiting Hi Voltage Visuals ⚡</h2>
