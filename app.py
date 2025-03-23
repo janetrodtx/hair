@@ -201,13 +201,24 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
 
 # --- Step 10: Final Page ---
 elif st.session_state.step == 10:
-    st.image("6.png", use_container_width=True)
+    st.image("7.png", use_container_width=True)
 
     st.markdown("""
-    <h2 style='text-align:center;'>Thanks for Visiting Hi Voltage Visuals ⚡</h2>
-    <p style='text-align:center;'>With over a decade as a licensed hairstylist, I'm blending hands-on expertise with creative data tools. Stay tuned for more magic! ✨</p>
+    <h2 style='text-align:center;'> About Me ⚡</h2>
+    <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care.  ✨</p>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <h2 style='text-align:center;'> What This App Does⚡ </h2>
+    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.
+
+    ✨ Find what works for you.
+    💡 Take control of your hair routine.
+     🛍 Shop smarter, not harder.
+
+    Welcome to a better way to care for your hair!</p>
+    """, unsafe_allow_html=True)
+               
     st.markdown("""
     <p style='text-align:center;'>
     <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
