@@ -125,28 +125,28 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡️"):
             next_step()
 
-# --- Step 6: Show Hair Concern Product Recommendations ---
+# --- Step 6: Show Product Recommendations ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    result = df[
-        (df["Issue"] == st.session_state.hair_issue) &
-        (df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
-    ]
+    if not df.empty:
+        result = df[
+            (df["Issue"] == st.session_state.hair_issue) &
+            (df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
+        ]
 
-    st.image("back2.png", use_container_width=True)
-
-    if not result.empty:
         st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
-        st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
-        st.write("🛍 Click the link to purchase:")
+        
+        if not result.empty:
+            st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
+            st.write("🛍 Click the link to purchase:")
 
-        product_text = result.iloc[0]['Recommended Product & Link']
-        if "](" in product_text:
-            formatted_products = product_text.replace(", ", "\n🔹 ")
-            st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
+            product_text = result.iloc[0]['Recommended Product & Link']
+            if "](" in product_text:
+                formatted_products = product_text.replace(", ", "\n🔹 ")
+                st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
+            else:
+                st.write(f"🔹 {product_text}")
         else:
-            st.write(f"🔹 {product_text}")
-    else:
-        st.warning("❌ No product found for this selection.")
+            st.warning("❌ No product found for this selection.")
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -154,7 +154,7 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
             go_back()
     with col2:
         if st.button("Next ➡️"):
-            st.session_state.step = 10  # Go to Final Page
+            next_step()
 
 # --- Step 4 (Alt): Styling Product Budget ---
 elif st.session_state.step == 4 and st.session_state.journey == "Styling Product Recommendations":
