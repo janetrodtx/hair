@@ -200,7 +200,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
             st.session_state.step = 10  # Final Page
 
 # --- Step 10: Final Page ---
-    elif st.session_state.step == 10:
+elif st.session_state.step == 10:
     st.image("7.png", width=700)
 
     st.markdown("""
