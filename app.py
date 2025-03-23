@@ -200,12 +200,8 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
             st.session_state.step = 10  # Final Page
 
 # --- Step 10: Final Page ---
-    st.markdown("""
-    <div style='text-align: center;'>
-    <img src='7.png' style='width: 80%; max-width: 700px; border-radius: 10px;' />
-    </div>
-    """, unsafe_allow_html=True)
-
+    elif st.session_state.step == 10:
+    st.image("7.png", width=700)
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
