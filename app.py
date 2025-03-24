@@ -217,5 +217,24 @@ elif st.session_state.step == 10:
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
     <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
-    """, unsafe
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <h2 style='text-align:center;'> What This App Does ⚡</h2>
+    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</p>
+    <p style='text-align:center;'>✨ Find what works for you. 💡 Take control of your hair routine. 🛍 Shop smarter, not harder.</p>
+    <p style='text-align:center;'>Welcome to a better way to care for your hair!</p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <p style='text-align:center;'>
+    <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
+    <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> |
+    <a href="https://www.tiktok.com/@yourhandle" target="_blank">🎵 TikTok</a>
+    </p>
+    """, unsafe_allow_html=True)
+
+    if st.button("Start Over"):
+        st.session_state.step = 1
+
 
