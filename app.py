@@ -10,13 +10,18 @@ if "step" not in st.session_state:
     st.session_state.step = 1
 if "journey" not in st.session_state:
     st.session_state.journey = None
+if "hair_issue" not in st.session_state:
+    st.session_state.hair_issue = None
+if "styling_goal" not in st.session_state:
+    st.session_state.styling_goal = None
 
 # 🔁 Navigation
 def next_step():
     st.session_state.step += 1
 
 def go_back():
-    st.session_state.step -= 1
+    if st.session_state.step > 1:
+        st.session_state.step -= 1
 
 # 🎨 Styling
 st.markdown("""
@@ -55,8 +60,7 @@ elif st.session_state.step == 2:
     st.markdown("<h3 style='text-align:center;'>What are you looking for?</h3>", unsafe_allow_html=True)
 
     journey_options = ["Hair Concerns & Product Solutions", "Styling Product Recommendations"]
-    default_index = journey_options.index(st.session_state.journey) if st.session_state.journey else 0
-    choice = st.radio("", journey_options, index=default_index, horizontal=True)
+    choice = st.radio("", journey_options, horizontal=True)
     st.session_state.journey = choice
 
     col1, col2 = st.columns([1, 1])
@@ -67,41 +71,40 @@ elif st.session_state.step == 2:
         if st.button("Next ➡"):
             next_step()
 
-# --- Step 3: Journey Logic ---
+# --- Step 3: Select Hair Issue OR Styling Goal ---
 elif st.session_state.step == 3:
     if st.session_state.journey == "Hair Concerns & Product Solutions":
         st.image("3.png", use_container_width=True)
         hair_issues = df["Issue"].dropna().unique()
         hair_issue = st.selectbox("Select Your Hair Concern:", ["Select an option"] + list(hair_issues))
 
-        if hair_issue != "Select an option":
-            st.session_state.hair_issue = hair_issue
-            col1, col2 = st.columns([1, 1])
-            with col1:
-                if st.button("⬅ Back"):
-                    go_back()
-            with col2:
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("⬅ Back"):
+                go_back()
+        with col2:
+            if hair_issue != "Select an option":
+                st.session_state.hair_issue = hair_issue
                 if st.button("Next ➡"):
                     next_step()
-        else:
-            st.warning("⬆️ Please select your hair concern above to continue.")
-
+            else:
+                st.warning("⬆️ Please select your hair concern to continue.")
     else:
         st.image("4.png", use_container_width=True)
         styling_goals = df["Styling Goal"].dropna().unique()
         styling_goal = st.selectbox("Select Your Styling Goal:", ["Select an option"] + list(styling_goals))
 
-        if styling_goal != "Select an option":
-            st.session_state.styling_goal = styling_goal
-            col1, col2 = st.columns([1, 1])
-            with col1:
-                if st.button("⬅️ Back"):
-                    go_back()
-            with col2:
-                if st.button("Next ➡️"):
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("⬅ Back"):
+                go_back()
+        with col2:
+            if styling_goal != "Select an option":
+                st.session_state.styling_goal = styling_goal
+                if st.button("Next ➡"):
                     next_step()
-        else:
-            st.warning("⬆️ Please select your styling goal to continue.")
+            else:
+                st.warning("⬆️ Please select your styling goal to continue.")
 
 # --- Step 4: Hair Concern Details ---
 elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns & Product Solutions":
@@ -116,16 +119,15 @@ elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns &
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡"):
             next_step()
 
-# --- Step 5: Budget Selection (NO PNGs) ---
+# --- Step 5: Budget Selection ---
 elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns & Product Solutions":
     st.image("5.png", use_container_width=True)
-
     budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up", "$75 & Up"])
     st.session_state.budget = budget
 
@@ -137,28 +139,26 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡"):
             next_step()
 
-# --- Step 6: Show Product Recommendations (TEXT ONLY) ---
+# --- Step 6: Show Hair Concern Product Recommendations ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    if not df.empty:
-        result = df[
-            (df["Issue"] == st.session_state.hair_issue) &
-            (df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
-        ]
+    result = df[
+        (df["Issue"] == st.session_state.hair_issue) &
+        (df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
+    ]
 
-        st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
-        
-        if not result.empty:
-            st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
-            st.write("🛍 Click the link to purchase:")
+    st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
 
-            product_text = result.iloc[0]['Recommended Product & Link']
-            if "](" in product_text:
-                formatted_products = product_text.replace(", ", "\n🔹 ")
-                st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
-            else:
-                st.write(f"🔹 {product_text}")
+    if not result.empty:
+        st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
+        st.write("🛍 Click the link to purchase:")
+        product_text = result.iloc[0]['Recommended Product & Link']
+        if "](" in product_text:
+            formatted_products = product_text.replace(", ", "\n🔹 ")
+            st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
         else:
-            st.warning("❌ No product found for this selection.")
+            st.write(f"🔹 {product_text}")
+    else:
+        st.warning("❌ No product found for this selection.")
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -166,9 +166,9 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
             go_back()
     with col2:
         if st.button("Next ➡"):
-            next_step()
+            st.session_state.step = 10
 
-# --- Step 4 (Alt): Styling Product Budget ---
+# --- Step 4 (Alt): Budget for Styling Products ---
 elif st.session_state.step == 4 and st.session_state.journey == "Styling Product Recommendations":
     budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up"])
     st.session_state.styling_budget = budget
@@ -194,7 +194,6 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
         st.write(f"✨ **Product Type:** {result['Product Type']}")
         st.write(f"📖 **Description:** {result['Description']}")
         st.write(f"💡 **How to Use:** {result['How to Use']}")
-
         if "](" in result["Recommended Product & Link"]:
             formatted_products = result["Recommended Product & Link"].replace(", ", "\n🔹 ")
             st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
@@ -209,28 +208,14 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
             go_back()
     with col2:
         if st.button("Next ➡"):
-            st.session_state.step = 10  # Final Page
+            st.session_state.step = 10
 
-# --- Step 10: Final Page ---
+# --- Final Page ---
+elif st.session_state.step == 10:
     st.image("7.png", use_container_width=True)
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
     <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
-    """, unsafe_allow_html=True)
+    """, unsafe
 
-    st.markdown("""
-    <h2 style='text-align:center;'> What This App Does⚡ </h2>
-    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</p>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <p style='text-align:center;'>
-    <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
-    <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> |
-    <a href="https://www.tiktok.com/@yourhandle" target="_blank">🎵 TikTok</a>
-    </p>
-    """, unsafe_allow_html=True)
-
-    if st.button("Start Over"):
-        st.session_state.step = 1
