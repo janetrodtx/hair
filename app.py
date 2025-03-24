@@ -1,16 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-# ✅ Load datasets from GitHub
-hair_issues_url = "https://raw.githubusercontent.com/janetrodtx/hair/refs/heads/main/hairconcerns%20-%20Sheet1.csv"
-styling_products_url = "https://raw.githubusercontent.com/janetrodtx/hair/refs/heads/main/stylingproducts_corrected.csv"
+# ✅ Load separate datasets for concerns and styling products
+hair_issues_df = pd.read_csv("https://raw.githubusercontent.com/janetrodtx/hair/refs/heads/main/hairconcerns%20-%20Sheet1.csv")
+styling_products_df = pd.read_csv("https://raw.githubusercontent.com/janetrodtx/hair/refs/heads/main/stylingproducts_corrected.csv")
 
-hair_df = pd.read_csv(hair_issues_url)
-style_df = pd.read_csv(styling_products_url)
-
-# ✅ Standardize column names for safe access
-hair_df.columns = hair_df.columns.str.strip().str.lower()
-style_df.columns = style_df.columns.str.strip().str.lower()
+# ✅ Standardize column names
+hair_issues_df.columns = hair_issues_df.columns.str.lower().str.strip()
+styling_products_df.columns = styling_products_df.columns.str.lower().str.strip()
 
 # ✅ Initialize session state
 if "step" not in st.session_state:
@@ -78,7 +75,7 @@ elif st.session_state.step == 2:
 elif st.session_state.step == 3:
     if st.session_state.journey == "Hair Concerns & Product Solutions":
         st.image("3.png", use_container_width=True)
-        hair_issues = hair_df["issue"].dropna().unique()
+        hair_issues = hair_issues_df["issue"].dropna().unique()
         hair_issue = st.selectbox("Select Your Hair Concern:", ["Select an option"] + list(hair_issues))
 
         if hair_issue != "Select an option":
@@ -95,14 +92,14 @@ elif st.session_state.step == 3:
 
     else:
         st.image("4.png", use_container_width=True)
-        styling_goals = style_df["styling goal"].dropna().unique()
+        styling_goals = styling_products_df["styling goal"].dropna().unique()
         styling_goal = st.selectbox("Select Your Styling Goal:", ["Select an option"] + list(styling_goals))
 
         if styling_goal != "Select an option":
             st.session_state.styling_goal = styling_goal
             col1, col2 = st.columns([1, 1])
             with col1:
-                if st.button("⬅️ Back"):
+                if st.button("⬅ Back"):
                     go_back()
             with col2:
                 if st.button("Next ➡"):
@@ -112,7 +109,7 @@ elif st.session_state.step == 3:
 
 # --- Step 4: Hair Concern Details ---
 elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    issue_data = hair_df[hair_df["issue"] == st.session_state.hair_issue].iloc[0]
+    issue_data = hair_issues_df[hair_issues_df["issue"] == st.session_state.hair_issue].iloc[0]
 
     st.markdown(f"""
     <h2 style='text-align:center;'>Understanding {issue_data['issue']}</h2>
@@ -123,15 +120,16 @@ elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns &
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("⬅️ Back"):
+        if st.button("⬅ Back"):
             go_back()
     with col2:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡"):
             next_step()
 
-# --- Step 5: Budget Selection ---
+# --- Step 5: Budget Selection (Hair Concerns) ---
 elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns & Product Solutions":
     st.image("5.png", use_container_width=True)
+
     budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up", "$75 & Up"])
     st.session_state.budget = budget
 
@@ -143,11 +141,11 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡"):
             next_step()
 
-# --- Step 6: Show Hair Concern Products ---
+# --- Step 6: Show Hair Product Recommendations ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    result = hair_df[
-        (hair_df["issue"] == st.session_state.hair_issue) &
-        (hair_df["budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
+    result = hair_issues_df[
+        (hair_issues_df["issue"] == st.session_state.hair_issue) &
+        (hair_issues_df["budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
     ]
 
     st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
@@ -157,7 +155,7 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
         st.write(f"💰 **Budget:** {product['budget']}")
         st.write("🛍 Click the link to purchase:")
 
-        product_text = product["recommended product & link"]
+        product_text = product.get("recommended product & link", "")
         if "](" in product_text:
             formatted_products = product_text.replace(", ", "\n🔹 ")
             st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
@@ -189,9 +187,9 @@ elif st.session_state.step == 4 and st.session_state.journey == "Styling Product
 
 # --- Step 5 (Alt): Show Styling Product Details ---
 elif st.session_state.step == 5 and st.session_state.journey == "Styling Product Recommendations":
-    result = style_df[
-        (style_df["styling goal"] == st.session_state.styling_goal) &
-        (style_df["budget"].str.lower().str.strip() == st.session_state.styling_budget.lower().strip())
+    result = styling_products_df[
+        (styling_products_df["styling goal"] == st.session_state.styling_goal) &
+        (styling_products_df["budget"].str.lower().str.strip() == st.session_state.styling_budget.lower().strip())
     ]
 
     if not result.empty:
@@ -201,7 +199,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
         st.write(f"📖 **Description:** {product['description']}")
         st.write(f"💡 **How to Use:** {product['how to use']}")
 
-        product_text = product["recommended product & link"]
+        product_text = product.get("recommended product & link", "")
         if "](" in product_text:
             formatted_products = product_text.replace(", ", "\n🔹 ")
             st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
@@ -224,22 +222,23 @@ elif st.session_state.step == 10:
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
-    <p style='text-align:center;'>Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
+    <p style='text-align:center;'> Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style='text-align:center;'> What This App Does ⚡</h2>
-    <p style='text-align:center;'>This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU.</p>
+    <h2 style='text-align:center;'> What This App Does⚡ </h2>
+    <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</p>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <p style='text-align:center;'>
-    <a href="https://www.amazon.com/shop/yourstore" target="_blank">Amazon Store</a> |
-    <a href="https://www.instagram.com/yourhandle" target="_blank">Instagram</a> |
-    <a href="https://www.tiktok.com/@yourhandle" target="_blank">TikTok</a>
+    <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
+    <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> |
+    <a href="https://www.tiktok.com/@yourhandle" target="_blank">🎵 TikTok</a>
     </p>
     """, unsafe_allow_html=True)
 
     if st.button("Start Over"):
         st.session_state.step = 1
+
 
