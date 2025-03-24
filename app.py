@@ -1,18 +1,17 @@
 import streamlit as st
 import pandas as pd
 
-# ✅ Load CSVs from GitHub Raw URLs
+# ✅ Load CSVs from GitHub (no local files)
 hair_issues_url = "https://raw.githubusercontent.com/janetrodtx/hair/main/hair_issues_data.csv"
 styling_products_url = "https://raw.githubusercontent.com/janetrodtx/hair/main/styling_products_data.csv"
 
-# Load datasets
 df_issues = pd.read_csv(hair_issues_url)
 df_styling = pd.read_csv(styling_products_url)
 
 df_issues.columns = df_issues.columns.str.strip()
 df_styling.columns = df_styling.columns.str.strip()
 
-# ✅ Session state init
+# ✅ Initialize session state
 if "step" not in st.session_state:
     st.session_state.step = 1
 if "journey" not in st.session_state:
@@ -25,18 +24,28 @@ def next_step():
 def go_back():
     st.session_state.step -= 1
 
-# 🎨 Dark Mode Styling
+# 🎨 Styling
 st.markdown("""
 <style>
-body, .stApp { background-color: black; color: white; }
+body, .stApp {
+    background-color: black;
+    color: white;
+}
 h1, h2, h3, .stSelectbox label, .stRadio label {
-    color: white; text-align: center; font-family: 'Arial', sans-serif;
+    color: white;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
 }
 .stButton button {
-    background-color: #FFD700; color: black; font-weight: bold;
-    border-radius: 8px; padding: 10px;
+    background-color: #FFD700;
+    color: black;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px;
 }
-.stRadio div { color: white !important; }
+.stRadio div {
+    color: white !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -56,7 +65,7 @@ elif st.session_state.step == 2:
     choice = st.radio("", journey_options, index=default_index, horizontal=True)
     st.session_state.journey = choice
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
@@ -64,16 +73,16 @@ elif st.session_state.step == 2:
         if st.button("Next ➡"):
             next_step()
 
-# --- Step 3: Select Concern or Style Goal ---
+# --- Step 3: Hair Concerns or Styling Goals ---
 elif st.session_state.step == 3:
     if st.session_state.journey == "Hair Concerns & Product Solutions":
         st.image("3.png", use_container_width=True)
-        options = df_issues["Issue"].dropna().unique()
-        issue = st.selectbox("Select Your Hair Concern:", ["Select an option"] + list(options))
+        hair_issues = df_issues["Issue"].dropna().unique()
+        hair_issue = st.selectbox("Select Your Hair Concern:", ["Select an option"] + list(hair_issues))
 
-        if issue != "Select an option":
-            st.session_state.hair_issue = issue
-            col1, col2 = st.columns([1, 1])
+        if hair_issue != "Select an option":
+            st.session_state.hair_issue = hair_issue
+            col1, col2 = st.columns(2)
             with col1:
                 if st.button("⬅ Back"):
                     go_back()
@@ -82,15 +91,14 @@ elif st.session_state.step == 3:
                     next_step()
         else:
             st.warning("⬆️ Please select your hair concern to continue.")
-
     else:
         st.image("4.png", use_container_width=True)
-        options = df_styling["Styling Goal"].dropna().unique()
-        goal = st.selectbox("Select Your Styling Goal:", ["Select an option"] + list(options))
+        styling_goals = df_styling["Styling Goal"].dropna().unique()
+        styling_goal = st.selectbox("Select Your Styling Goal:", ["Select an option"] + list(styling_goals))
 
-        if goal != "Select an option":
-            st.session_state.styling_goal = goal
-            col1, col2 = st.columns([1, 1])
+        if styling_goal != "Select an option":
+            st.session_state.styling_goal = styling_goal
+            col1, col2 = st.columns(2)
             with col1:
                 if st.button("⬅ Back"):
                     go_back()
@@ -100,17 +108,18 @@ elif st.session_state.step == 3:
         else:
             st.warning("⬆️ Please select your styling goal to continue.")
 
-# --- Step 4: Show Hair Concern Info ---
+# --- Step 4: Show Hair Concern Details ---
 elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    data = df_issues[df_issues["Issue"] == st.session_state.hair_issue].iloc[0]
+    issue_data = df_issues[df_issues["Issue"].str.lower().str.strip() == st.session_state.hair_issue.lower().strip()].iloc[0]
+
     st.markdown(f"""
-    <h2 style='text-align:center;'>Understanding {data['Issue']}</h2>
-    <p style='text-align:center;'>📖 <b>Definition:</b> {data['Definition']}</p>
-    <p style='text-align:center;'>⚠️ <b>Cause:</b> {data['Cause']}</p>
-    <p style='text-align:center;'>🛠 <b>Solution:</b> {data['Solution']}</p>
+    <h2 style='text-align:center;'>Understanding {issue_data['Issue']}</h2>
+    <p style='text-align:center;'>📖 <b>Definition:</b> {issue_data['Definition']}</p>
+    <p style='text-align:center;'>⚠️ <b>Cause:</b> {issue_data['Cause']}</p>
+    <p style='text-align:center;'>🛠 <b>Solution:</b> {issue_data['Solution']}</p>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
@@ -118,13 +127,14 @@ elif st.session_state.step == 4 and st.session_state.journey == "Hair Concerns &
         if st.button("Next ➡"):
             next_step()
 
-# --- Step 5: Budget for Concerns ---
+# --- Step 5: Budget for Hair Concerns ---
 elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns & Product Solutions":
     st.image("5.png", use_container_width=True)
+
     budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up", "$75 & Up"])
     st.session_state.budget = budget
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
@@ -132,40 +142,43 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡"):
             next_step()
 
-# --- Step 6: Product Recommendations (Concerns) ---
+# --- Step 6: Show Hair Concern Product Recommendations ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    filtered = df_issues[
-        (df_issues["Issue"] == st.session_state.hair_issue) &
+    result = df_issues[
+        (df_issues["Issue"].str.lower().str.strip() == st.session_state.hair_issue.lower().strip()) &
         (df_issues["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
     ]
 
     st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
-    if not filtered.empty:
-        row = filtered.iloc[0]
+
+    if not result.empty:
+        row = result.iloc[0]
         st.write(f"💰 **Budget:** {row['Budget']}")
         st.write("🛍 Click the link to purchase:")
+
         product_text = row['Recommended Product & Link']
         if "](" in product_text:
-            st.markdown("🔹 " + product_text.replace(", ", "\n🔹 "), unsafe_allow_html=True)
+            formatted_products = product_text.replace(", ", "\n🔹 ")
+            st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
         else:
-            st.write("🔹 " + product_text)
+            st.write(f"🔹 {product_text}")
     else:
         st.warning("❌ No product found for this selection.")
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
     with col2:
         if st.button("Next ➡"):
-            next_step()
+            st.session_state.step = 10
 
-# --- Step 4 (Alt): Budget for Styling ---
+# --- Step 4 (Alt): Styling Product Budget ---
 elif st.session_state.step == 4 and st.session_state.journey == "Styling Product Recommendations":
     budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up"])
     st.session_state.styling_budget = budget
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
@@ -173,28 +186,30 @@ elif st.session_state.step == 4 and st.session_state.journey == "Styling Product
         if st.button("See Products ➡"):
             next_step()
 
-# --- Step 5 (Alt): Styling Products Display ---
+# --- Step 5 (Alt): Show Styling Product Details ---
 elif st.session_state.step == 5 and st.session_state.journey == "Styling Product Recommendations":
-    filtered = df_styling[
-        (df_styling["Styling Goal"] == st.session_state.styling_goal) &
+    result = df_styling[
+        (df_styling["Styling Goal"].str.lower().str.strip() == st.session_state.styling_goal.lower().strip()) &
         (df_styling["Budget"].str.lower().str.strip() == st.session_state.styling_budget.lower().strip())
     ]
 
-    if not filtered.empty:
-        row = filtered.iloc[0]
+    if not result.empty:
+        row = result.iloc[0]
         st.markdown(f"<h2 style='text-align:center;'>Style: {row['Styling Goal']}</h2>", unsafe_allow_html=True)
         st.write(f"✨ **Product Type:** {row['Product Type']}")
         st.write(f"📖 **Description:** {row['Description']}")
         st.write(f"💡 **How to Use:** {row['How to Use']}")
+
         product_text = row['Recommended Product & Link']
         if "](" in product_text:
-            st.markdown("🔹 " + product_text.replace(", ", "\n🔹 "), unsafe_allow_html=True)
+            formatted_products = product_text.replace(", ", "\n🔹 ")
+            st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
         else:
-            st.write("🔹 " + product_text)
+            st.write(f"🔹 {product_text}")
     else:
-        st.warning("❌ No product found for this style and budget.")
+        st.warning("❌ No product found for this style + budget.")
 
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("⬅ Back"):
             go_back()
@@ -208,13 +223,13 @@ elif st.session_state.step == 10:
 
     st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
-    <p style='text-align:center;'>Hi, I’m Janet, a former hairstylist with 10 years in the hair industry. I merged my love of hair care with data analytics to create this app. ✨</p>
+    <p style='text-align:center;'>Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <h2 style='text-align:center;'> What This App Does ⚡</h2>
-    <p style='text-align:center;'>Personalized product recommendations based on your hair concerns or styling goals, with budget options and shopping links. Shop smarter, not harder! 🛍</p>
-    """, unsafe_allow_html=True)
+    <p style='text-align:center;'>This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</
+
 
     st.markdown("""
     <p style='text-align:center;'>
