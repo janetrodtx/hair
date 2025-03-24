@@ -221,7 +221,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Styling Product
 elif st.session_state.step == 10:
     st.image("7.png", use_container_width=True)
 
-        st.markdown("""
+    st.markdown("""
     <h2 style='text-align:center;'> About Me ⚡</h2>
     <p style='text-align:center;'>Hi, I’m Janet, a former hairstylist with 10 years of experience in the hair industry and a passion for hair education. After years of helping clients find the right products, I combined my expertise with data analytics & visualization to create an easier way to shop for hair care. ✨</p>
     """, unsafe_allow_html=True)
