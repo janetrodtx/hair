@@ -143,7 +143,7 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡"):
             next_step()
 
-# --- Step 6: Show Product Recommendations (Hair Concerns) ---
+# --- Step 6: Show Product Recommendations (TEXT ONLY) ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
     if not hair_df.empty:
         result = hair_df[
@@ -157,7 +157,7 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
             st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
             st.write("🛍 Click the link to purchase:")
 
-            product_text = result.iloc[0]['Recommended Product & Link']
+            product_text = result.iloc[0]['Product & Link']
             if "](" in product_text:
                 formatted_products = product_text.replace(", ", "\n🔹 ")
                 st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
@@ -172,21 +172,7 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
             go_back()
     with col2:
         if st.button("Next ➡"):
-            st.session_state.step = 10  # 👈 Route to Final Page
-
-
-# --- Step 4 (Alt): Styling Product Budget Selection ---
-elif st.session_state.step == 4 and st.session_state.journey == "Styling Product Recommendations":
-    budget = st.radio("Select Your Budget:", ["Under $25", "$25 & Up"])
-    st.session_state.styling_budget = budget
-
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("⬅ Back"):
-            go_back()
-    with col2:
-        if st.button("See Products ➡"):
-            next_step()
+            st.session_state.step = 10  # ✅ Send to final page
 
 # --- Step 5 (Alt): Show Styling Product Details ---
 elif st.session_state.step == 5 and st.session_state.journey == "Styling Product Recommendations":
@@ -229,15 +215,15 @@ elif st.session_state.step == 10:
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style='text-align:center;'> What This App Does ⚡ </h2>
+    <h2 style='text-align:center;'> What This App Does ⚡</h2>
     <p style='text-align:center;'> This app takes the guesswork out of hair care by giving you personalized product recommendations based on your hair type, concerns, and budget. No more wasting money on the wrong products—just the best choices, tailored for YOU, with links to shop directly.</p>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <p style='text-align:center;'>
-    <a href="https://www.amazon.com/shop/yourstore" target="_blank">🛍 Amazon Store</a> |
-    <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> |
-    <a href="https://www.tiktok.com/@yourhandle" target="_blank">🎵 TikTok</a>
+    <a href="https://www.amazon.com/shop/yourstore" target="_blank">Amazon Store 🛍</a> |
+    <a href="https://www.instagram.com/yourhandle" target="_blank">Instagram 📸</a> |
+    <a href="https://www.tiktok.com/@yourhandle" target="_blank">TikTok 🎵</a>
     </p>
     """, unsafe_allow_html=True)
 
