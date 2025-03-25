@@ -153,18 +153,17 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
 
         st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
         
-        if not result.empty:
-            st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
-            st.write("🛍 Click the link to purchase:")
+       if not result.empty:
+    st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
+    st.write("🛍 Click the link to purchase:")
 
-            product_text = result.iloc[0]['Product & Link']
-            if "](" in product_text:
-                formatted_products = product_text.replace(", ", "\n🔹 ")
-                st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
-            else:
-                st.write(f"🔹 {product_text}")
-        else:
-            st.warning("❌ No product found for this selection.")
+    product_text = result.iloc[0]['Recommended Product & Link']  # ✅ Corrected column name
+    if "](" in product_text:
+        formatted_products = product_text.replace(", ", "\n🔹 ")
+        st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
+    else:
+        st.write(f"🔹 {product_text}")
+
 
     col1, col2 = st.columns([1, 1])
     with col1:
