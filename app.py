@@ -143,28 +143,28 @@ elif st.session_state.step == 5 and st.session_state.journey == "Hair Concerns &
         if st.button("See Recommendations ➡"):
             next_step()
 
-# --- Step 6: Show Hair Product Recommendations ---
+# --- Step 6: Show Product Recommendations (Hair Concerns) ---
 elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns & Product Solutions":
-    result = hair_df[
-        (hair_df["Issue"] == st.session_state.hair_issue) &
-        (hair_df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
-    ]
+    if not hair_df.empty:
+        result = hair_df[
+            (hair_df["Issue"] == st.session_state.hair_issue) &
+            (hair_df["Budget"].str.lower().str.strip() == st.session_state.budget.lower().strip())
+        ]
 
-    st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
-    
-    if not result.empty:
-        product = result.iloc[0]
-        st.write(f"💰 **Budget:** {product['Budget']}")
-        st.write("🛍 Click the link to purchase:")
+        st.markdown(f"<h2 style='text-align:center;'>Recommended for {st.session_state.hair_issue}</h2>", unsafe_allow_html=True)
+        
+        if not result.empty:
+            st.write(f"💰 **Budget:** {result.iloc[0]['Budget']}")
+            st.write("🛍 Click the link to purchase:")
 
-        product_text = product["Recommended Product & Link"]
-        if "](" in product_text:
-            formatted_products = product_text.replace(", ", "\n🔹 ")
-            st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
+            product_text = result.iloc[0]['Recommended Product & Link']
+            if "](" in product_text:
+                formatted_products = product_text.replace(", ", "\n🔹 ")
+                st.markdown(f"🔹 {formatted_products}", unsafe_allow_html=True)
+            else:
+                st.write(f"🔹 {product_text}")
         else:
-            st.write(f"🔹 {product_text}")
-    else:
-        st.warning("❌ No product found for this selection.")
+            st.warning("❌ No product found for this selection.")
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -172,7 +172,8 @@ elif st.session_state.step == 6 and st.session_state.journey == "Hair Concerns &
             go_back()
     with col2:
         if st.button("Next ➡"):
-            next_step()
+            st.session_state.step = 10  # 👈 Route to Final Page
+
 
 # --- Step 4 (Alt): Styling Product Budget Selection ---
 elif st.session_state.step == 4 and st.session_state.journey == "Styling Product Recommendations":
