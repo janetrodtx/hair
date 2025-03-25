@@ -33,7 +33,7 @@ This Streamlit-powered app helps users discover **hair care and styling products
 
 ## 🔗 Try It Out
 
-**Live Demo**: [Coming Soon](https://hairrecommendations.streamlit.app/)  
+**Live Demo**: [(https://www.canva.com/design/DAGiv0FXM8E/apsskPtyIragtL42Hx_VxQ/watch?utm_content=DAGiv0FXM8E&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h92a0f9abbf)](https://hairrecommendations.streamlit.app/)  
 **Amazon Storefront**: [Your Store Link]([https://www.amazon.com/shop/profile/amzn1.account.AGMZPUMIJSDZCM7CVE2WFVUXVRSA)
 
 ---
